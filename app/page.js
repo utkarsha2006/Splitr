@@ -4,9 +4,12 @@ import { ArrowRight } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import {Card,CardContent} from "@/components/ui/card";
 
-import { FEATURES, STEPS } from "@/lib/landing";
+
+import { FEATURES, STEPS, TESTIMONIALS } from "@/lib/landing";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { AvatarFallback } from "@radix-ui/react-avatar";
 
 export default function Home() {
   return (
@@ -57,7 +60,7 @@ export default function Home() {
           <div className="container mx-auto max-w-5xl overflow-hidden rounded-xl shadow-xl">
             <div className="gradient p-1 aspect-[16/9]">
               <Image
-                src="/hero.png"
+                src="/heroo.jpg"
                 width={1280}
                 height={720}
                 alt="Banner"
@@ -122,7 +125,7 @@ export default function Home() {
               </p>
 
               <div className="mx-auto mt-12 grid max-w-5xl gap-8 lg:grid-cols-3">
-                {STEPS.map(({ label, title, description }) => (
+                {STEPS.map(({ label, title, description }) => (  
                   <div
                     key={label}
                     className="flex flex-col items-center space-y-4"
@@ -139,11 +142,55 @@ export default function Home() {
                   </div>
                 ))}
               </div>
+
+              <div className="mx-auto mt-12 grid max-w-5xl gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {TESTIMONIALS.map(({quote, name, role, image}) => (
+                  <Card key={name}>
+                    <CardContent className="space-y-4 p-6">
+                      <p className="text-gray-500">{quote}</p>
+
+                      <div className="flex items-center space-x-3">
+                        <Avatar>
+                          <AvatarImage src={image} alt={name}/>
+                          <AvatarFallback>name.charAt(0)</AvatarFallback>
+                        </Avatar>
+
+                        <div className="text-left">
+                          <p className="text-sm font-medium">{name}</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
             </div>
+          </section>
+
+          <section className="py-20 gradient">
+                <div className="container mx-auto px-4 md:px-6 text-center space-y-6">
+                    <h2 className="text-3xl font-extrabold tracking-tight md:text-4xl text-white">
+                        Ready to Simplify expense sharing?
+                    </h2>
+
+                    <p className="mx-auto max-w-[600px] text-green-100 md:text-xl/relaxed">
+                        Join thousands of users who have made splitting expenses stress-free.
+                    </p>
+
+                    <Button asChild size="lg" className="bg-green-800 hocer:opacity-90">
+                      <Link href="/dashboard">
+                          Get Started
+                          <ArrowRight className="ml-2 h-4 w-4"/>
+                      </Link>
+                    </Button>
+                </div>
           </section>
 
         </div>
       </section>
+
+      <footer className="border-t bg-gray-50 py-12 text-center text-sm text-muted-foreground">
+        Made with love by me
+      </footer>
     </div>
   );
 }
