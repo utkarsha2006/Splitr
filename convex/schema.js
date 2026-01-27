@@ -27,14 +27,14 @@ export default defineSchema({
                 paid: v.boolean(),
             })
         ),
-        groupId: v.optional(v.id("group")),
+        groupId: v.optional(v.id("groups")),
         createdBy: v.id("users"),
     })
         .index("by_group", ["groupId"])
         .index("by_user_and_group", ["paidByUserId", "groupId"])
         .index("by_date", ["date"]),
 
-    group: defineTable({
+    groups: defineTable({
         name: v.string(),
         description: v.optional(v.string()),
         createdBy: v.id("users"),
@@ -53,7 +53,7 @@ export default defineSchema({
         date: v.number(), //timestamp
         paidByUserId: v.id("users"),
         receivedByUserId: v.id("users"),
-        groupId: v.optional(v.id("group")),
+        groupId: v.optional(v.id("groups")),
         relatedExpenseIds: v.optional(v.array(v.id("expenses"))),
         createdBy: v.id("users"),
     })
