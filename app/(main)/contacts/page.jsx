@@ -9,9 +9,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CreateGroupModal from "./_components/create-group-modal";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function ContactsPage() {
   const data = useQuery(api.contacts.getAllContacts);
@@ -19,6 +19,21 @@ export default function ContactsPage() {
   // ✅ MINIMUM FIX
   const [isCreateGroupModalOpen, setIsCreateGroupModalOpen] = useState(false);
   const router = useRouter();
+
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const createGroupParam = searchParams.get("createGroup");
+
+    if(createGroupParam === "true") {
+      setIsCreateGroupModalOpen(true);
+
+      const url = new URL(window.location.href);
+      url.searchParams.delete("creteGroup");
+
+      router.replace(url.pathname + url.search);
+    }
+  }, [searchParams, router]);
 
   // Convex loading state
   if (data === undefined) {
