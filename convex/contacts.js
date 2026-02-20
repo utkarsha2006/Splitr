@@ -119,8 +119,22 @@ export const getAllContacts = query({
       };
     }
 
-    // get all users (later we will filter better)
+    // Get current user
+    const currentUser = await ctx.db
+      .query("users")
+      .withIndex("by_token", (q) =>
+        q.eq("tokenIdentifier", identity.tokenIdentifier)
+      )
+      .unique();
+
+    // Get all users (later we will filter better)
     const users = await ctx.db.query("users").collect();
+
+    // Get all groups where user is a member
+    const allGroups = await ctx.db.query("groups").collect();
+    const userGroups = allGroups.filter((group) =>
+      group.members.some((member) => member.userId === currentUser?._id)
+    );
 
     return {
       users: users.map((u) => ({
@@ -130,8 +144,12 @@ export const getAllContacts = query({
         imageUrl: u.imageUrl,
       })),
 
-      // groups will be added later
-      groups: [],
+      groups: userGroups.map((g) => ({
+        id: g._id,
+        name: g.name,
+        description: g.description,
+        memberCount: g.members.length,
+      })),
     };
   },
 });

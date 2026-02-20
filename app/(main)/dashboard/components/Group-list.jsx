@@ -1,18 +1,20 @@
 import React from 'react'
+import Link from 'next/link'
+import { Users } from 'lucide-react'
 
-const GroupList = () => {
+const GroupList = ({ groups }) => {
   if(!groups || groups.length === 0){
     return (
-    <div className='text-center py-6'>
-      <p className='text-muted-foreground'>No groups yet</p>
-      <p className='text-sm text-muted-foreground mt-1'>Create a group to start tracking shared expenses</p>
-    </div>
-  )
+      <div className='text-center py-6'>
+        <p className='text-muted-foreground'>No groups yet</p>
+        <p className='text-sm text-muted-foreground mt-1'>Create a group to start tracking shared expenses</p>
+      </div>
+    )
   }
 
   return (
     <div className='space-y-3'>
-      {groups.map((group) => (
+      {groups.map((group) => {
         const balance = group.balance || 0;
         const hasBalance = balance !== 0;
 
@@ -44,7 +46,7 @@ const GroupList = () => {
             )}
           </Link>
         )
-      ))}
+      })}
     </div>
   )
 }
