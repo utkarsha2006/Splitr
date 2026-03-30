@@ -46,7 +46,7 @@ const DashboardPage = () => {
             <h1 className="text-5xl gradient-title">Dashboard</h1>
 
             <Button asChild>
-                <Link href="/expenses/new">
+                <Link href="/dashboard/expenses/new">
                     <PlusCircle className="mr-2 h-4 w-4"/>
                     Add Expense
                 </Link>

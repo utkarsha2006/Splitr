@@ -6,12 +6,17 @@ import { BarLoader } from "react-spinners";
 import { useParams, useRouter } from "next/navigation";
 import React, { useState } from 'react';
 import { ArrowLeft, PlusCircle } from "lucide-react";
-import { AvatarFallback } from "@radix-ui/react-avatar";
-import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { TabsContent, TabsTrigger } from "@radix-ui/react-tabs";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { CardContent, CardHeader, CardTitle, Card } from "@/components/ui/card";
+import { TabsContent, TabsTrigger, Tabs, TabsList } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { ExpenseList } from "@/components/expense-list";
+import { SettlementList } from "@/components/settlement-list";
 
 const PersonPage = () => {
     const params = useParams();
+    const router = useRouter();
     const [activeTab, setActiveTab] = useState("expenses");
 
     const { data, isLoading } = useConvexQuery(
@@ -36,7 +41,7 @@ const PersonPage = () => {
         <div>
             <div className="mb-6">
                 <Button
-                    varient="outline"
+                    variant="outline"
                     size="sm"
                     className="mb-4"
                     onClick={() => router.back()}
@@ -60,8 +65,8 @@ const PersonPage = () => {
                     </div>
 
                     <div className="flex gap-2">
-                        <Button asChild varient="outline">
-                            <Link href={`/expenses/new`}>
+                        <Button asChild variant="outline">
+                            <Link href={`/dashboard/expenses/new`}>
                                 <PlusCircle className="mr-2 h-4 w-4"/>
                                 Add expense
                             </Link>
@@ -84,30 +89,30 @@ const PersonPage = () => {
                 value={activeTab}
                 onValueChange={setActiveTab}
                 className="space-y-4"
-            ></Tabs>
-
-            <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="expenses">
-                    Expenses ({expenses.length})
-                </TabsTrigger>
-                <TabsTrigger value="settlements">
-                    Settlements ({settlements.length})
-                </TabsTrigger>
-            </TabsList>
-            <TabsContent value="expenses" className="space-y-4">
-                <ExpenseList 
-                    expenses={expenses}
-                    showOtherPerson={false}
-                    otherPersonId={params.id}
-                    userLookupMap={{ [otherUser.id]: otherUser }}
-                />
-            </TabsContent>
-            <TabsContent value="settlements" className="space-y-4">
-                <settlementsList 
-                    settlements={settlements}
-                    userLookupMap={{ [otherUser.id]: otherUser }}
-                />
-            </TabsContent>
+            >
+                <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="expenses">
+                        Expenses ({expenses.length})
+                    </TabsTrigger>
+                    <TabsTrigger value="settlements">
+                        Settlements ({settlements.length})
+                    </TabsTrigger>
+                </TabsList>
+                <TabsContent value="expenses" className="space-y-4">
+                    <ExpenseList 
+                        expenses={expenses}
+                        showOtherPerson={false}
+                        otherPersonId={params.id}
+                        userLookupMap={{ [otherUser.id]: otherUser }}
+                    />
+                </TabsContent>
+                <TabsContent value="settlements" className="space-y-4">
+                    <SettlementList 
+                        settlements={settlements}
+                        userLookupMap={{ [otherUser.id]: otherUser }}
+                    />
+                </TabsContent>
+            </Tabs>
         </div>
     );
 }

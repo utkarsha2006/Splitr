@@ -29,7 +29,7 @@ export default function ContactsPage() {
       setIsCreateGroupModalOpen(true);
 
       const url = new URL(window.location.href);
-      url.searchParams.delete("creteGroup");
+      url.searchParams.delete("createGroup");
 
       router.replace(url.pathname + url.search);
     }

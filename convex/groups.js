@@ -1,12 +1,71 @@
 import { convexToJson, v } from "convex/values";
-import { query } from "./_generated/server";
+import { query, internalQuery } from "./_generated/server";
+import { internal } from "./_generated/api";
+
+export const getGroupOrMembers = query({
+    args: { groupId: v.optional(v.id("groups")) },
+    handler: async (ctx, { groupId }) => {
+        const currentUser = await ctx.runQuery(internal.users.getCurrentUser);
+        
+        // Get all groups where the current user is a member
+        const allGroups = await ctx.db
+            .query("groups")
+            .collect();
+        
+        const userGroups = allGroups.filter((group) =>
+            group.members.some((m) => m.userId === currentUser._id)
+        );
+        
+        // Format groups for display
+        const groups = userGroups.map((group) => ({
+            id: group._id,
+            name: group.name,
+            description: group.description,
+            memberCount: group.members.length,
+        }));
+        
+        let selectedGroup = null;
+        if (groupId) {
+            const group = await ctx.db.get(groupId);
+            if (!group) throw new Error("Group not found");
+            
+            if (!group.members.some((m) => m.userId === currentUser._id))
+                throw new Error("You are not a member of this group");
+            
+            // Get member details for the selected group
+            const memberDetails = await Promise.all(
+                group.members.map(async (m) => {
+                    const user = await ctx.db.get(m.userId);
+                    return {
+                        id: user._id,
+                        name: user.name,
+                        imageUrl: user.imageUrl,
+                        role: m.role,
+                    };
+                })
+            );
+            
+            selectedGroup = {
+                id: group._id,
+                name: group.name,
+                description: group.description,
+                members: memberDetails,
+            };
+        }
+        
+        return {
+            groups,
+            selectedGroup,
+        };
+    },
+});
 
 export const getGroupExpenses = query({
     args: { groupId: v.id("groups") },
     handler: async (ctx, { groupId }) => {
         const currentUser = await ctx.runQuery(internal.users.getCurrentUser);
 
-        const group = await ctx.db.query("groups").get(groupId);
+        const group = await ctx.db.get(groupId);
         if(!group) throw new Error("Group not found");
 
         if (!group.members.some((m) => m.userId === currentUser._id))
@@ -20,10 +79,11 @@ export const getGroupExpenses = query({
         /* ---------------- member map -------------- */
         const memberDetails = await Promise.all(
             group.members.map(async (m) => {
+                const user = await ctx.db.get(m.userId);
                 return{
-                    id: u._id,
-                    name: u.name,
-                    imageUrl: u.imageUrl,
+                    id: user._id,
+                    name: user.name,
+                    imageUrl: user.imageUrl,
                     role: m.role,
                 };
             })

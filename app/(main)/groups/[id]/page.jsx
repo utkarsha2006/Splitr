@@ -12,7 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PlusCircle, ArrowLeftRight, ArrowLeft, Users } from "lucide-react";
 import { ExpenseList } from "@/components/expense-list";
 import { SettlementList } from "@/components/settlement-list";
-import { GroupBalances } from "@/components/group-balances";
+import { GroupBalances } from "@/components/group-balance";
 import { GroupMembers } from "@/components/group-members";
 
 export default function GroupExpensesPage() {
@@ -74,7 +74,7 @@ export default function GroupExpensesPage() {
               </Link>
             </Button>
             <Button asChild>
-              <Link href={`/expenses/new`}>
+              <Link href={`/dashboard/expenses/new`}>
                 <PlusCircle className="mr-2 h-4 w-4" />
                 Add expense
               </Link>
